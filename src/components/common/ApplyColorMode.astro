@@ -1,18 +1,16 @@
 ---
 import { UI } from 'astrowind:config';
-
-// TODO: This code is temporary
 ---
 
-<script is:inline define:vars={{ defaultTheme: UI.theme || 'system' }}>
+<script is:inline define:vars={{ defaultTheme: UI.theme || 'light' }}>
   function applyTheme(theme) {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    const matches = document.querySelectorAll('[data-aw-toggle-color-scheme] > input');
 
+    const matches = document.querySelectorAll('[data-aw-toggle-color-scheme] > input');
     if (matches && matches.length) {
       matches.forEach((elem) => {
         elem.checked = theme !== 'dark';
@@ -20,14 +18,14 @@ import { UI } from 'astrowind:config';
     }
   }
 
-  if ((defaultTheme && defaultTheme.endsWith(':only')) || (!localStorage.theme && defaultTheme !== 'system')) {
-    applyTheme(defaultTheme.replace(':only', ''));
-  } else if (
-    localStorage.theme === 'dark' ||
-    (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  ) {
+  // Si el usuario ya seleccionó un tema antes, usarlo
+  if (localStorage.theme === 'dark') {
     applyTheme('dark');
+  } else if (localStorage.theme === 'light') {
+    applyTheme('light');
   } else {
+    // Si es la primera vez, forzar tema claro
+    localStorage.setItem('theme', 'light');
     applyTheme('light');
   }
 </script>
